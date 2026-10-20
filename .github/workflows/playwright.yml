@@ -1,0 +1,46 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 2 * * *' # régression complète chaque nuit
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BASE_URL: ${{ vars.BASE_URL || 'https://www.saucedemo.com' }}
+      API_URL: ${{ vars.API_URL || 'https://jsonplaceholder.typicode.com' }}
+      STANDARD_USER: ${{ secrets.STANDARD_USER }}
+      LOCKED_USER: ${{ secrets.LOCKED_USER }}
+      USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: ruff check . && ruff format --check .
+      - run: playwright install --with-deps chromium firefox
+
+      # Smoke sur les PR, suite complète sinon. Parallèle (-n auto) + 1 retry en CI
+      - name: Smoke tests
+        if: github.event_name == 'pull_request'
+        run: pytest -m smoke -n auto --reruns 1
+      - name: Suite complète
+        if: github.event_name != 'pull_request'
+        run: pytest -n auto --reruns 1 --browser chromium --browser firefox
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-reports
+          path: |
+            reports/
+            test-results/
+          retention-days: 14

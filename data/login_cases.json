@@ -1,0 +1,5 @@
+[
+  {"id": "mot-de-passe-incorrect", "username": "standard_user", "password": "wrong", "error": "Username and password do not match"},
+  {"id": "username-vide", "username": "", "password": "secret_sauce", "error": "Username is required"},
+  {"id": "mot-de-passe-vide", "username": "standard_user", "password": "", "error": "Password is required"}
+]
