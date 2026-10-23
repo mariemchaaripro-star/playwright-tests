@@ -1,3 +1,8 @@
+# Dépendances Python du projet, avec des versions FIGÉES (==) pour que tout le monde
+# (postes des testeurs et CI) exécute exactement les mêmes versions.
+# Installation : pip install -r requirements.txt
+# Mise à jour : changer la version ici, relancer les tests, puis commiter.
+
 playwright==1.56.0
 pytest==8.4.2
 pytest-playwright==0.7.1

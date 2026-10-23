@@ -1,3 +1,8 @@
+# Configuration de Ruff, le linter/formateur Python du projet.
+# Vérifier : ruff check .        Corriger le format : ruff format .
+# Règles activées : erreurs PEP8 (E), bugs (F, B), ordre des imports (I),
+# syntaxe moderne (UP) et bonnes pratiques pytest (PT).
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"

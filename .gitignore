@@ -1,3 +1,7 @@
+# Fichiers et dossiers que Git ne doit pas versionner :
+# environnement virtuel, caches, secrets (.env), rapports et résultats générés par les tests,
+# et état de connexion sauvegardé (playwright/.auth, contient des cookies de session).
+
 __pycache__/
 *.pyc
 .venv/

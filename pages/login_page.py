@@ -1,3 +1,9 @@
+"""Page Object de la page de connexion.
+
+Regroupe les sélecteurs (champs identifiant / mot de passe, bouton, message d'erreur) et les
+actions de la page (`login`, `expect_error`). Si l'interface change, seul ce fichier est à modifier.
+"""
+
 import re
 
 from playwright.sync_api import Page, expect

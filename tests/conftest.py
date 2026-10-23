@@ -1,4 +1,11 @@
-"""Fixtures partagées : configuration Playwright, authentification, Page Objects, client API."""
+"""Fixtures pytest partagées par tous les tests (chargées automatiquement par pytest).
+
+- base_url / _test_id_attribute / browser_context_args : configuration de Playwright
+- auth_state : connexion UNE seule fois par session, état de session sauvegardé sur disque
+- auth_page : page déjà connectée, construite à partir de cet état
+- login_page / inventory_page : Page Objects injectés directement dans les tests
+- api : client HTTP Playwright pour les tests d'API
+"""
 
 from collections.abc import Callable, Generator
 
