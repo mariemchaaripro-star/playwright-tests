@@ -1,3 +1,9 @@
+"""Page Object de la page catalogue (liste des produits).
+
+Sélecteurs et actions métier : vérifier que la page est chargée, ajouter un produit au panier,
+trier la liste, lire les prix affichés.
+"""
+
 import re
 
 from playwright.sync_api import Page, expect

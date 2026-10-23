@@ -1,3 +1,10 @@
+# Pipeline d'intégration continue GitHub Actions.
+# Déclencheurs : push sur main, chaque pull request, chaque nuit à 2h (UTC), ou à la main (onglet Actions).
+# Étapes : installation -> lint Ruff -> installation des navigateurs -> tests -> publication des rapports.
+# - Pull request : tests smoke uniquement (retour rapide)
+# - Autres cas : suite complète sur Chromium et Firefox
+# Les identifiants viennent des secrets du dépôt (Settings > Secrets and variables > Actions).
+
 name: Playwright Tests
 
 on:

@@ -3,6 +3,9 @@
 Tests E2E (UI) et API pour l'application de démo [saucedemo.com](https://www.saucedemo.com),
 avec l'API [jsonplaceholder](https://jsonplaceholder.typicode.com).
 
+> Architecture, fonctionnement interne et procédures d'évolution : voir la
+> [documentation technique](docs/DOCUMENTATION_TECHNIQUE.md).
+
 ## Prérequis
 - Python 3.11 ou plus
 - Git
@@ -47,6 +50,7 @@ utils/                 helpers réutilisables
 tests/conftest.py      fixtures : auth, Page Objects, client API
 tests/e2e/             tests UI
 tests/api/             tests API
+docs/                  documentation technique
 .github/workflows/     pipeline CI
 ```
 

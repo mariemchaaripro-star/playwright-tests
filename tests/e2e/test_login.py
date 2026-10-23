@@ -1,3 +1,10 @@
+"""Tests E2E de la page de connexion.
+
+Vérifient la connexion réussie, l'utilisateur bloqué et les cas d'erreur.
+Les cas d'erreur viennent de data/login_cases.json (un test généré par cas, data-driven).
+Ces tests partent d'une session NON connectée (fixture login_page).
+"""
+
 import re
 
 import pytest

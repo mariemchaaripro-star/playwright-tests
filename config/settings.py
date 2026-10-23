@@ -1,4 +1,10 @@
-"""Configuration centralisée, chargée depuis les variables d'environnement / fichiers .env."""
+"""Configuration centralisée du projet.
+
+Lit les variables d'environnement (fichier .env, puis .env.<TEST_ENV> qui le surcharge) et les
+expose dans un objet unique `settings` : URL de l'application, URL de l'API, identifiants, etc.
+Aucune URL ni aucun mot de passe ne doit être écrit en dur ailleurs dans le code :
+on utilise toujours `from config.settings import settings`.
+"""
 
 import os
 from dataclasses import dataclass

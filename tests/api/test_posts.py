@@ -1,3 +1,9 @@
+"""Tests d'API du endpoint /posts (sans navigateur).
+
+Vérifient les codes HTTP et le contenu des réponses en lecture (GET), création (POST)
+et pour une ressource inexistante (404). Tous ces tests portent le marker `api`.
+"""
+
 import pytest
 from playwright.sync_api import APIRequestContext
 

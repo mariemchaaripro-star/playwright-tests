@@ -1,3 +1,9 @@
+"""Tests E2E de la page catalogue.
+
+Vérifient l'affichage des produits, l'ajout au panier et le tri par prix.
+La connexion est déjà faite grâce à la fixture inventory_page (session réutilisée).
+"""
+
 import pytest
 from playwright.sync_api import expect
 
