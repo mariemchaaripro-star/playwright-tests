@@ -1,0 +1,81 @@
+# Revue de code automatisée des merge requests (GitLab CI/CD).
+#
+# À inclure depuis le .gitlab-ci.yml du projet :
+#   include:
+#     - local: ci/gitlab-ci.revue.yml
+#
+# Variables CI/CD à créer (Settings > CI/CD > Variables), toutes « Masked » :
+#   ANTHROPIC_API_KEY                         clé d'API Claude (job revue-claude)
+#   GITLAB_ACCESS_TOKEN                       jeton d'accès du projet, rôle Reporter, scope « api »
+#                                             (publication du rapport en commentaire de la MR)
+#   STANDARD_USER, LOCKED_USER, USER_PASSWORD identifiants de l'application testée
+# Attention : une variable « Protected » n'est visible que sur les branches protégées ;
+# les pipelines de MR sur des branches de fonctionnalité ne la verraient pas.
+#
+# Fonctionnement :
+#   verification  bloquant : lint, collecte, connectivité, tous les tests (scripts/verifier.sh)
+#   revue-claude  informatif : revue selon REVIEW.md, publiée en commentaire de la MR
+
+stages:
+  - verification
+  - revue
+
+.mr-python:
+  # Image officielle Playwright : navigateurs et dépendances système inclus.
+  # La version doit être celle de « playwright » dans requirements.txt.
+  image: mcr.microsoft.com/playwright/python:v1.56.0-noble
+  variables:
+    GIT_DEPTH: "0" # historique complet : nécessaire pour calculer le diff de la MR
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  cache:
+    key:
+      files: [requirements.txt]
+    paths: [.cache/pip]
+  before_script:
+    - python3 -m venv .venv
+    - .venv/bin/pip install -q -r requirements.txt
+
+verification:
+  extends: .mr-python
+  stage: verification
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  script:
+    - bash scripts/verifier.sh
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths: [reports/, test-results/]
+    reports:
+      junit: reports/verification/junit-1.xml
+
+revue-claude:
+  extends: .mr-python
+  stage: revue
+  needs:
+    - job: verification
+      artifacts: true # réutilise les résultats des tests au lieu de les relancer
+  rules:
+    # « always » : la revue s'exécute aussi (surtout) quand la vérification a échoué.
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+  allow_failure: true # la revue informe ; c'est le job « verification » qui bloque la fusion
+  timeout: 30m
+  script:
+    - curl -fsSL https://claude.ai/install.sh | bash
+    - export PATH="$HOME/.local/bin:$PATH"
+    - git fetch --quiet origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - >
+      bash scripts/revue_mr.sh
+      --cible "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+      --sans-tests
+      --sortie reports/revue/revue-mr.md
+    - >
+      curl --fail -sS -X POST
+      -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN"
+      --data-urlencode "body@reports/revue/revue-mr.md"
+      "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes"
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths: [reports/revue/]
