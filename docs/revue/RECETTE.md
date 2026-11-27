@@ -34,18 +34,25 @@ Le poste doit accéder à `www.saucedemo.com` et `jsonplaceholder.typicode.com`.
 
 ## 3. Procès-verbal de recette
 
-| ID | Statut | Date | Environnement | Observations |
-|---|---|---|---|---|
-| R01 | | | | |
-| R02 | | | | |
-| R03 | | | | |
-| R04 | | | | |
-| R05 | | | | |
-| R06 | | | | |
-| R07 | | | | |
-| R08 | | | | |
-| R09 | | | | |
-| R10 | | | | |
-| R11 | | | | |
-| R12 | | | | |
-| R13 | | | | |
+Recette du 2026-11-27, conteneur Linux (Python 3.13), **sans accès réseau aux sites testés**
+(proxy : 403) et avec des navigateurs Playwright d'une autre version que celle du projet.
+
+| ID | Statut | Observations |
+|---|---|---|
+| R01 | ✅ Conforme | 16 fichiers, lint et format OK |
+| R02 | ✅ Conforme | 11 tests collectés |
+| R03 | ✅ Conforme | Les deux sites sont signalés `INJOIGNABLE`, avec la raison (403 du proxy) |
+| R04 | ⚠️ Non concluant | 11/11 classés « Environnement » : `ENOTFOUND` (API), `Executable doesn't exist` (navigateur). **À rejouer sur un poste ayant accès aux sites.** |
+| R05 | ⏸️ Non exécuté | Dépend de R04 |
+| R06 | ✅ Mécanisme validé | Validé sur une suite témoin : un test qui alterne succès et échec est signalé `REUSSI → ECHEC`. À rejouer sur la vraie suite. |
+| R07 | ✅ Mécanisme validé | Validé sur une suite témoin : l'échec est classé « Échec », avec `fichier:ligne` et `assert 13 == 30`. À rejouer sur la vraie suite. |
+| R08 | ✅ Conforme | Aucun faux « Échec » : les 11 tests sont classés « Environnement », avec la cause |
+| R09 | ✅ Conforme | `USER_PASSWORD=` donne « Variable d'environnement manquante : USER_PASSWORD » (collecte, connectivité) et « Les tests n'ont pas démarré » |
+| R10 | ✅ Conforme | Contexte de la PR n°1 : 1 commit, 22 fichiers, aucun avertissement de copie de travail |
+| R11 | ✅ Conforme | Rapport de 253 lignes (`docs/revue/exemples/revue-pr-1.md`) ; les 19 références `fichier:ligne` ont été vérifiées ; les anomalies S1 et A1 ont été reproduites |
+| R12 | ⏸️ Non exécuté | VS Code n'est pas disponible dans l'environnement de recette |
+| R13 | ⏸️ Non exécuté | Pas d'instance GitLab ; YAML validé syntaxiquement (2 étapes, 2 jobs) |
+
+Défauts trouvés et corrigés pendant la recette :
+- emplacement répété (« test → origine » identiques) ;
+- message peu clair quand pytest ne démarre pas (aucun rapport JUnit).
